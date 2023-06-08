@@ -10,6 +10,7 @@ pipeline {
     }
     
     stage('Build') {
+      steps {
         script {
           docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
             def imageName = "syua0529/pollify-webserver:latest"
@@ -24,15 +25,18 @@ pipeline {
             }
           }
         }
+      }
     }
     
     stage('Deploy') {
       environment {
         KUBECONFIG = credentials('syua0529') // Kubernetes 구성 파일의 credentials ID
       }
+      steps {
+        // Kubernetes 클러스터에 배포합니다.
         //sh 'kubectl apply -f deployment.yaml'
         //sh 'kubectl apply -f service.yaml'
       }
+    }
   }
 }
-
