@@ -35,8 +35,8 @@ pipeline {
       }
       steps {
         // Kubernetes 클러스터에 배포하는 단계를 추가해야 합니다.
-        //sh 'kubectl apply -f deployment.yaml'
-        //sh 'kubectl apply -f service.yaml'
+       // sh 'kubectl apply -f deployment.yaml'
+       // sh 'kubectl apply -f service.yaml'
       }
     }
   }
