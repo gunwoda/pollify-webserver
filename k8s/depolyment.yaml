@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pollify-webserver-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pollify-webserver
+  template:
+    metadata:
+      labels:
+        app: pollify-webserver
+    spec:
+      containers:
+        - name: pollify-webserver
+          image: syua0529/pollify-webserver
+          ports:
+            - containerPort: 8080
