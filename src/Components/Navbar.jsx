@@ -65,12 +65,12 @@ function Navbar() {
 			<Logo><Link to="/">Polify</Link></Logo>
 			<Nav>
 				<Menu><Link to="/">Home</Link></Menu>
-				<Menu><Link to="/">About</Link></Menu>
+				<Menu><Link to="/createForm">Create Survey</Link></Menu>
 				<Menu><Link to="/QuerySurvey">All surveys</Link></Menu>
 			</Nav>
 			<BtnBox>
-				<Link to="/SignIn"><LoginBtn>SignUp</LoginBtn></Link>
-				<Link to="/SignUp"><SignUpBtn>SignIn</SignUpBtn></Link>
+				<Link to="/SignIn"><LoginBtn>Login</LoginBtn></Link>
+				<Link to="/SignUp"><SignUpBtn>SignUp</SignUpBtn></Link>
 			</BtnBox>
 		</Header>
 	);

@@ -3,6 +3,27 @@ import axios from "axios";
 import { Typography, Box } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
+import Navbar from '../Components/Navbar';
+import styled from 'styled-components';
+
+const Header = styled.div`
+  background-color: #f2f2f2;
+  height: 150px;
+  border-bottom: 1px solid #d6d6d6;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HeaderComment1 = styled.div`
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+`;
+
 const SurveyResultsPage = ({ match }) => {
   const [surveyResults, setSurveyResults] = useState(null);
   const navigate = useNavigate();
@@ -44,6 +65,11 @@ const SurveyResultsPage = ({ match }) => {
   const { name, surveyDetails } = surveyResults;
 
   return (
+    <>
+    <Navbar></Navbar>
+    <Header>
+        <HeaderComment1>Polify</HeaderComment1>
+    </Header>
     <Box>
       <Typography variant="h4" gutterBottom>
         Survey Results: {name}
@@ -72,6 +98,7 @@ const SurveyResultsPage = ({ match }) => {
         </div>
       ))}
     </Box>
+    </>
   );
 };
 

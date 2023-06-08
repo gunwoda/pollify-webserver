@@ -2,6 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Typography, Card, CardContent, ListItemText, Button, Grid, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import Navbar from '../Components/Navbar';
+import styled from 'styled-components';
+
+const Header = styled.div`
+  background-color: #f2f2f2;
+  height: 150px;
+  border-bottom: 1px solid #d6d6d6;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HeaderComment1 = styled.div`
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+`;
+
 
 const SurveyListPage = () => {
   const [surveyList, setSurveyList] = useState([]);
@@ -51,6 +72,11 @@ const SurveyListPage = () => {
   };
 
   return (
+    <>
+    <Navbar></Navbar>
+    <Header>
+        <HeaderComment1>Polify</HeaderComment1>
+    </Header>
     <Box display="flex" justifyContent="center">
       <Grid container spacing={2} sx={{ maxWidth: "800px", width: "100%" }}>
         <Grid item xs={12}>
@@ -86,6 +112,7 @@ const SurveyListPage = () => {
         </Grid>
       </Grid>
     </Box>
+    </>
   );
 };
 

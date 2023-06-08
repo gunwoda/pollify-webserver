@@ -15,6 +15,26 @@ import {
 } from '@mui/material/';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
+import Navbar from '../Components/Navbar';
+
+const Header = styled.div`
+  background-color: #f2f2f2;
+  height: 150px;
+  border-bottom: 1px solid #d6d6d6;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HeaderComment1 = styled.div`
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+`;
+
 
 // mui의 css 우선순위가 높기때문에 important를 설정 - 실무하다 보면 종종 발생 우선순위 문제
 const FormHelperTexts = styled(FormHelperText)`
@@ -101,6 +121,11 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Navbar></Navbar>
+    <Header>
+        <HeaderComment1>Polify</HeaderComment1>
+    </Header>
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -180,6 +205,7 @@ const Register = () => {
         </Box>
       </Container>
     </ThemeProvider>
+    </>
   );
 };
 

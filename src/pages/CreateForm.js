@@ -13,6 +13,27 @@ import {
   Grid,
 } from "@mui/material";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
+import Navbar from '../Components/Navbar';
+import styled from 'styled-components';
+
+const Header = styled.div`
+  background-color: #f2f2f2;
+  height: 150px;
+  border-bottom: 1px solid #d6d6d6;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HeaderComment1 = styled.div`
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+`;
+
 
 const CreateForm = () => {
   const [surveyName, setSurveyName] = useState("");
@@ -106,6 +127,12 @@ const CreateForm = () => {
   };
 
   return (
+    <>
+    <Navbar></Navbar>
+    <Header>
+        <HeaderComment1>Polify</HeaderComment1>
+    </Header>
+    
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2} sx={{ maxWidth: 400, margin: "0 auto" }}>
         <Grid item xs={12}>
@@ -223,6 +250,7 @@ const CreateForm = () => {
         </Grid>
       </Grid>
     </form>
+    </>
   );
 };
 
