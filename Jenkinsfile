@@ -4,7 +4,6 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // Git 저장소에서 소스 코드를 체크아웃합니다.
         checkout scm
       }
     }
