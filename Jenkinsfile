@@ -34,9 +34,9 @@ pipeline {
         KUBECONFIG = credentials('syua0529') // Kubernetes 구성 파일의 credentials ID
       }
       steps {
-        // Kubernetes 클러스터에 배포합니다.
-        //sh 'kubectl apply -f deployment.yaml'
-        //sh 'kubectl apply -f service.yaml'
+        // Kubernetes 클러스터에 배포하는 단계를 추가해야 합니다.
+        sh 'kubectl apply -f deployment.yaml'
+        sh 'kubectl apply -f service.yaml'
       }
     }
   }
