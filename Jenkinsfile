@@ -5,7 +5,7 @@ pipeline {
     stage('Checkout') {
       steps {
         // Git 저장소에서 소스 코드를 체크아웃합니다.
-        git 'https://github.com/gunwoda/pollify-webserver.git'
+        checkout scm
       }
     }
     
