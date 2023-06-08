@@ -1,35 +1,74 @@
 /* pipeline 변수 설정 */
-def DOCKER_IMAGE_NAME = "pollify-webserver"           // 생성하는 Docker image 이름
+def DOCKER_IMAGE_NAME = "polify-webserver"           // 생성하는 Docker image 이름
 def DOCKER_IMAGE_TAGS = "1"  // 생성하는 Docker image 태그
-def DOCKER_CONTAINER_NAME = "pollify-webserver"    // 생성하는 Docker Container 이름
-def NAMESPACE = "pollify-webserver"
+def DOCKER_CONTAINER_NAME = "polify-webserver"    // 생성하는 Docker Container 이름
+def NAMESPACE = "polify-webserver"
+// def SLACK_CHANNEL = "#frontend-app"
 def VERSION = "${env.BUILD_NUMBER}"
 def DATE = new Date();
 
+// def notifyStarted(slack_channel) {
+//     slackSend (channel: "${slack_channel}", color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+// }
+// def notifySuccessful(slack_channel) {
+//     slackSend (channel: "${slack_channel}", color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+// }
+// def notifyFailed(slack_channel) {
+//   slackSend (channel: "${slack_channel}", color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+// }
+  
 podTemplate(label: 'builder',
             containers: [
+                containerTemplate(name: 'node', image: 'node:11-alpine', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.15.3', command: 'cat', ttyEnabled: true),
+                // containerTemplate(name: 'scanner', image: 'newtmitch/sonar-scanner', ttyEnabled: true, command: 'cat')
             ],
             volumes: [
+                //hostPathVolume(mountPath: '/home/gradle/.gradle', hostPath: '/home/admin/k8s/jenkins/.gradle'),
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+                //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
+        try {
+            // stage('Start') {
+            //     // Slack 메시지 전송
+            //     notifyStarted(SLACK_CHANNEL)
+            // }
             stage('Checkout'){
                  checkout scm   // gitlab으로부터 소스 다운
             }
             stage('Build') {
                 container('node') {
+                    /* 도커 이미지를 활용하여 gradle 빌드를 수행하여 ./build/libs에 jar파일 생성 */
                     sh "npm install"
-                    sh "npm run build"
+			 	    // sh "npm install --save axios"
+			        sh "npm run build"
                 }
             }
+            // stage('Inspection code') {
+            //     container('scanner') {
+            //         sh "echo `pwd`"
+            //         sh "echo `ls`"
+            //         // withSonarQubeEnv('sonarqube-cluster') {
+            //         sh """sonar-scanner \
+            //                 -Dsonar.projectName=batch-visualizer-frontend-app \
+            //                 -Dsonar.projectKey=batch-visualizer-frontend-app \
+            //                 -Dsonar.projectBaseDir=/home/jenkins/agent/workspace/batch-visualizer-frontend-app \
+            //                 -Dsonar.sources=./src \
+            //                 -Dsonar.host.url=http://66.42.43.41:30002/sonar \
+            //                 -Dsonar.login=497e2c036cbc2cd1bcc987d97ca6dfc6af1134c9
+            //             """
+            //         // }
+            //     }
+            // }
             stage('Docker build') {
                 container('docker') {
                     withCredentials([usernamePassword(
-                        credentialsId: 'syua0529',
-                        usernameVariable: 'syua0529',
-                        passwordVariable: 'adg789951')]) {
+                        credentialsId: 'docker_hub_auth',
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD')]) {
+                            /* ./build/libs 생성된 jar파일을 도커파일을 활용하여 도커 빌드를 수행한다 */
                             sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS} ."
                             sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                             sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS}"
@@ -39,11 +78,13 @@ podTemplate(label: 'builder',
             stage('Run kubectl') {
                 container('kubectl') {
                     withCredentials([usernamePassword(
-                        credentialsId: 'syua0529',
-                        usernameVariable: 'syua0529',
-                        passwordVariable: 'adg789951')]) {
+                        credentialsId: 'docker_hub_auth',
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD')]) {
+                            /* namespace 존재여부 확인. 미존재시 namespace 생성 */
                             sh "kubectl get ns ${NAMESPACE}|| kubectl create ns ${NAMESPACE}"
                         
+                            /* secret 존재여부 확인. 미존재시 secret 생성성 */
                             sh """
                                 kubectl get secret my-secret -n ${NAMESPACE} || \
                                 kubectl create secret docker-registry my-secret \
@@ -61,14 +102,16 @@ podTemplate(label: 'builder',
                             sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/k8s-deployment.yaml"
 
                             /* yaml파일로 배포를 수행한다 */
-                            //sh "kubectl apply -f ./k8s/k8s-deployment.yaml -n ${NAMESPACE}"
-                            //sh "kubectl apply -f ./k8s/k8s-service.yaml -n ${NAMESPACE}"
+                            sh "kubectl apply -f ./k8s/k8s-deployment.yaml -n ${NAMESPACE}"
+                            sh "kubectl apply -f ./k8s/k8s-service.yaml -n ${NAMESPACE}"
                     }
                 }
             }
-        }
-}catch(e) {
+            // notifySuccessful(SLACK_CHANNEL)
+        } catch(e) {
+        /* 배포 실패 시 */
             currentBuild.result = "FAILED"
+            // notifyFailed(SLACK_CHANNEL)
         }
     }
 }
