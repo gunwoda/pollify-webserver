@@ -14,6 +14,9 @@ import {
 } from "@mui/material";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import Navbar from '../Components/Navbar';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
 
 const Header = styled.div`
@@ -37,7 +40,8 @@ const HeaderComment1 = styled.div`
 
 const CreateForm = () => {
   const [surveyName, setSurveyName] = useState("");
-  const [duration, setDuration] = useState(30);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [visibility, setVisibility] = useState(true);
   const [surveyDetails, setSurveyDetails] = useState([
     {
@@ -102,7 +106,7 @@ const CreateForm = () => {
 
     const surveyData = {
       name: surveyName,
-      duration: duration,
+      duration: endDate && startDate ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) : 0, // 두 날짜의 차이를 계산하여 일 수로 변환
       visibility: visibility,
       surveyDetails: surveyDetails,
     };
@@ -144,13 +148,26 @@ const CreateForm = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            label="Duration (in days)"
-            type="number"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            fullWidth
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Start Date"
+              value={startDate}
+              onChange={(newValue) => setStartDate(newValue)}
+              renderInput={(params) => <TextField {...params} />}
+              fullWidth
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="End Date"
+              value={endDate}
+              onChange={(newValue) => setEndDate(newValue)}
+              renderInput={(params) => <TextField {...params} />}
+              fullWidth
+            />
+          </LocalizationProvider>
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
