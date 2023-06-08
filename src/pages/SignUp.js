@@ -30,7 +30,7 @@ const Boxs = styled(Box)`
 
 const Register = () => {
   const theme = createTheme();
-  const [checked, setChecked] = useState(false);
+  const [checked] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordState, setPasswordState] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -39,14 +39,14 @@ const Register = () => {
  
 
   const onhandlePost = async (data) => {
-    const { email, name, password,id,birthday,gender,nickname,hashtags } = data;
-    const getData = { email, name, password,id,birthday,gender,nickname,hashtags };
+    const { email, password,nickname } = data;
+    const getData = { email, password, nickname };
 
     // get
     await axios
       .post('/auth/signup', {param : getData})
       .then(function (response) {
-        if(response.status == "success"){
+        if(response.status === "success"){
           alert("회원가입 성공");
           history("/SignIn");
         }
@@ -71,7 +71,7 @@ const Register = () => {
       rePassword: data.get('rePassword'),
       nickname : data.get('nickname'),
     };
-    const { email, password, rePassword,nickname } = joinData;
+    const { email, password, rePassword } = joinData;
 
     // 이메일 유효성 체크
     const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
@@ -87,9 +87,6 @@ const Register = () => {
     // 비밀번호 같은지 체크
     if (password !== rePassword) setPasswordError('비밀번호가 일치하지 않습니다.');
     else setPasswordError('');
-
-    // 회원가입 동의 체크
-    if (!checked) alert('회원가입 약관에 동의해주세요.');    
 
     console.log(joinData);
 

@@ -1,9 +1,5 @@
-import { Route, Routes } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import Home from "./pages/Home";
 import React from "react";
-import JoinForm from "./pages/SignUp";
-import SignIn from "./pages/SignIn";
 import Router from "./Router";
 
 const GlobalStyle = createGlobalStyle`

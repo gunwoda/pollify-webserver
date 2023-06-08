@@ -30,7 +30,7 @@ const Boxs = styled(Box)`
 
 const SignIn = () => {
   const theme = createTheme();
-  const [checked, setChecked] = useState(false);
+  const [checked] = useState(false);
   const [idError, setIdError] = useState('');
   const history = useNavigate();
 
@@ -44,7 +44,7 @@ const SignIn = () => {
     await axios
       .post('http://localhost:8080/auth/register', {param : getData})
       .then(function (response) {
-        if (response.status == "success"){
+        if (response.status === "success"){
           console.log(response, '성공');
           const token = response.token;
           localStorage.setItem('jwtToken',token);
@@ -67,10 +67,10 @@ const SignIn = () => {
       password: data.get('password'),
       id : data.get('id'),
     };
-    const { password,id } = joinData;
+    const { id } = joinData;
 
     // id 공백 체크
-    if (id == '') setIdError('Id를 입력해주세요.');
+    if (id === '') setIdError('Id를 입력해주세요.');
     else setIdError('');
 
     console.log(joinData);

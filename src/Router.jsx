@@ -4,7 +4,7 @@ import React from "react";
 import JoinForm from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import CreateForm from "./pages/CreateForm";
-import QuerySurvey from "./pages/QuerySurvey";
+import SurveyListPage from "./pages/QuerySurvey";
 import SurveyResultsPage from "./pages/ResultSurvey";
 import SurveyParticipation from "./pages/JoinSurvey";
 
@@ -15,7 +15,7 @@ const Router = () => {
 			<Route path="/SignIn" element={<SignIn />} />
 			<Route path="/SignUp" element={<JoinForm />} />
 			<Route path='/createForm' element={<CreateForm/>} />
-			<Route path='/QuerySurvey' element={<QuerySurvey/>} />
+			<Route path='/QuerySurvey' element={<SurveyListPage/>} />
 			<Route path='/ResultSurvey' element={<SurveyResultsPage/>} />
 			<Route path='/joinsurvey' element={<SurveyParticipation/>} />
 			

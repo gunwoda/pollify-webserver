@@ -1,163 +1,229 @@
-import React, { useState, } from 'react'
-import axios, { Axios } from 'axios';
-import { data } from 'autoprefixer';
-import Navbar from '../Components/Navbar';
+import React, { useState } from "react";
+import axios from "axios";
+import {
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  IconButton,
+  Grid,
+} from "@mui/material";
+import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 
-export default function CreateForm() {
-  const [formContent, setFormContent] = useState([]);
-  const [onEdit, setOnEdit] = useState(false);
-  const [textField, setTextField] = useState("");
-  const [editedField, setEditedField] = useState("");
-  const [formtitle, setFormtitle] = useState("");
+const CreateForm = () => {
+  const [surveyName, setSurveyName] = useState("");
+  const [duration, setDuration] = useState(30);
+  const [visibility, setVisibility] = useState(true);
+  const [surveyDetails, setSurveyDetails] = useState([
+    {
+      question: "",
+      surveyDetailType: "SUBJECTIVE",
+      options: [],
+    },
+  ]);
 
-  const addQuestion = () => {
-    const field = {
-      "name": `question_${formContent.length}`,
-      "label": "Untitled question",
-      "question_type": "subjective", // "multipletype",
-      "list": []
-    }
-    setFormContent([...formContent, field]);
-  }
+  const handleQuestionChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails[index][name] = value;
+    setSurveyDetails(updatedSurveyDetails);
+  };
 
-  const Data = {
-    "name" : formtitle,
-    "duration" : 30,
-    "visibility": true,
-  }
+  const handleSurveyDetailTypeChange = (e, index) => {
+    const { value } = e.target;
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails[index].surveyDetailType = value;
+    setSurveyDetails(updatedSurveyDetails);
+  };
 
-  const editField = (fieldName, fieldLabel) => {
-    const formFields = [...formContent];
-    const fieldIndex = formFields.findIndex(f => f.name === fieldName);
-    if (fieldIndex > -1){
-      formFields[fieldIndex].label = fieldLabel;
-      setFormContent(formFields);
-    }
-  }
+  const handleOptionChange = (e, surveyIndex, optionIndex) => {
+    const { value } = e.target;
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails[surveyIndex].options[optionIndex].option = value;
+    setSurveyDetails(updatedSurveyDetails);
+  };
 
-  const editFieldType = (fieldName, fieldLabel) => {
-    const formFields = [...formContent];
-    const fieldIndex = formFields.findIndex(f => f.name === fieldName);
-    if (fieldIndex > -1){
-      formFields[fieldIndex].question_type = fieldLabel;
-      setFormContent(formFields);
-    }
-  }
+  const handleAddQuestion = () => {
+    setSurveyDetails([
+      ...surveyDetails,
+      {
+        question: "",
+        surveyDetailType: "SUBJECTIVE",
+        options: [],
+      },
+    ]);
+  };
 
-  const addFieldOption =  (fieldName, option) => {
-    const formFields = [...formContent];
-    const fieldIndex = formFields.findIndex(f => f.name === fieldName);
-    if (fieldIndex > -1){
-      if (option && option != ""){
-        formFields[fieldIndex].list.push(option);
-        setFormContent(formFields);
-        setTextField("");
-      }
-    }
-  }
+  const handleAddOption = (index) => {
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails[index].options.push({ option: "" });
+    setSurveyDetails(updatedSurveyDetails);
+  };
 
-  const postData = async () => {
-    console.log({name : formtitle, surveydetails : formContent});
+  const handleRemoveQuestion = (index) => {
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails.splice(index, 1);
+    setSurveyDetails(updatedSurveyDetails);
+  };
+
+  const handleRemoveOption = (surveyIndex, optionIndex) => {
+    const updatedSurveyDetails = [...surveyDetails];
+    updatedSurveyDetails[surveyIndex].options.splice(optionIndex, 1);
+    setSurveyDetails(updatedSurveyDetails);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const surveyData = {
+      name: surveyName,
+      duration: duration,
+      visibility: visibility,
+      surveyDetails: surveyDetails,
+    };
+
     try {
-      const response = await axios.post('https://api.example.com/data', { 
-        // 요청 본문 데이터를 객체 형태로 전달합니다.
-        data : data,
-        surveydetails: formContent
-      });
-      if (response.status == "success"){
-
+      const response = await axios.post("/surveys", surveyData);
+      const responseData = response.data;
+      
+      if (responseData.status === "success") {
+        // 성공적인 응답 처리
+        console.log("Survey creation successful");
+      } else if (responseData.status === "fail") {
+        // 실패 응답 처리
+        console.log("Survey creation failed:", responseData.reason);
       }
-      console.log(response.data); // 성공적인 응답의 데이터를 콘솔에 출력합니다.
     } catch (error) {
-      console.error(error); // 오류가 발생한 경우 콘솔에 출력합니다.
+      // 오류 처리
+      console.error("Survey creation error:", error);
     }
-  };
-
-  const handleClick = () => {
-    console.log("post");
-    postData();
-  };
-
-  const handleChange = (event) => {
-    setFormtitle(event.target.value);
+    
+    console.log(surveyData);
   };
 
   return (
-    <>
-    <Navbar></Navbar>
-    
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    
-    <div className='container mx-auto px-4 h-screen'>
-      <div className='flex flex-col w-full space-y-2 my-4'>
-        <h1 className='text-2xl font-bold'>Create Form</h1>
-        <h2 className='text-lg'>Form Title</h2>
-        <input
-        type="text"
-        value={formtitle}
-        onChange={handleChange}
-      />
-      </div>
-      <div className='bg-white shadow-lg rounded-md p-5 my-10'>
-        {
-          formContent.map((field) => {
-            return (
-              <div>
-                <div className='flex justify-between items-center space-y-2'>
-                  <div key={field.name} className="block text-sm font-medium text-gray-700 capitalize">
-                   {
-                    onEdit && (editedField === field.name) ?
-                    <input type="text" value={field.label} onChange={(e) => editField(field.name, e.target.value)} onBlur={() => {setOnEdit(false);setEditedField("")}} /> 
-                    :
-                     <label onClick={() => {setOnEdit(true); setEditedField(field.name)}}>{field.label}</label>
-                   }
-                  </div>
-                  <div>
-                    <select onChange={(e) => editFieldType(field.name, e.target.value)}>
-                      <option value="subjective">Short Answer</option>
-                      <option value="multipletype">multipletype</option>
-                    </select>
-                  </div>
-                </div>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={2} sx={{ maxWidth: 400, margin: "0 auto" }}>
+        <Grid item xs={12}>
+          <TextField
+            label="Survey Name"
+            value={surveyName}
+            onChange={(e) => setSurveyName(e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Duration (in days)"
+            type="number"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibility}
+                onChange={(e) => setVisibility(e.target.checked)}
+              />
+            }
+            label="Visibility"
+          />
+        </Grid>
+        {surveyDetails.map((survey, index) => (
+          <Grid item xs={12} key={index}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12}>
+                <TextField
+                  label="Question"
+                  name="question"
+                  value={survey.question}
+                  onChange={(e) => handleQuestionChange(e, index)}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Survey Detail Type</InputLabel>
+                  <Select
+                    value={survey.surveyDetailType}
+                    onChange={(e) => handleSurveyDetailTypeChange(e, index)}
+                  >
+                    <MenuItem value="SUBJECTIVE">Subjective</MenuItem>
+                    <MenuItem value="MULTIPLE_CHOICE">Multiple Choice</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+            {survey.surveyDetailType === "MULTIPLE_CHOICE" && (
+              <>
+                <Button
+                  variant="outlined"
+                  startIcon={<AddCircleOutline />}
+                  onClick={() => handleAddOption(index)}
+                  sx={{ mt: 2, mb: 1 }}
+                >
+                  Add Option
+                </Button>
+                {survey.options.map((option, optionIndex) => (
+                  <Grid container alignItems="center" spacing={1} key={optionIndex}>
+                    <Grid item xs={9}>
+                      <TextField
+                        label="Option"
+                        value={option.option}
+                        onChange={(e) =>
+                          handleOptionChange(e, index, optionIndex)
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleRemoveOption(index, optionIndex)}
+                      >
+                        <RemoveCircleOutline />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                ))}
+              </>
+            )}
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<RemoveCircleOutline />}
+              onClick={() => handleRemoveQuestion(index)}
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Remove Question
+            </Button>
+          </Grid>
+        ))}
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutline />}
+            onClick={handleAddQuestion}
+          >
+            Add Question
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button type="submit" variant="contained" color="primary">
+            Submit
+          </Button>
+        </Grid>
+      </Grid>
+    </form>
+  );
+};
 
-                <div className='my-4'>
-                  {
-                    field.question_type == 'subjective' && <input type="text" className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
-                  }
-                  {field.question_type == 'multipletype' &&
-                    <div className='my-4 flex flex-col space-y-2'>
-                      <select
-                        className='px-5 shadow-sm h-10 rounded-md block w-full'>
-                        {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
-                      </select>
-                      <div className='flex space-between'>
-                        <input type="text" onChange={(e) => setTextField(e.target.value)} value={textField} placeholder="Add an option" className='flex-1' />
-                        <button className='bg-indigo-700 block hover:bg-indigo-900 text-white px-4' onClick={() => addFieldOption(field.name, textField) }>Add</button>
-                      </div>
-                    </div>
-                  }
-                </div>
-
-              </div>
-            )
-          })
-        }
-
-        <div className='relative w-full p-5'>
-          <div className='absolute inset-x-0 bottom-0 h-12 flex justify-center'>
-            <button onClick={() => addQuestion()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Add Question
-            </button>
-          </div>
-        </div>
-      </div>
-      <button onClick={handleClick}>POST 요청 보내기</button>
-      
-    </div>
-    </>
-  )
-}
+export default CreateForm;

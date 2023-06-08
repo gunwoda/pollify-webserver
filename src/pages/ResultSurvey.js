@@ -1,94 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Typography, Box } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+const SurveyResultsPage = ({ match }) => {
+  const [surveyResults, setSurveyResults] = useState(null);
+  const navigate = useNavigate();
+  const { surveyId } = useParams();
 
-const SurveyResults = ({ surveyId }) => {
-  const [survey, setSurvey] = useState(
-    {
-        name: "survey name",
-        surveyDetails: [
-          {
-            question: "test question",
-            detailType: "SUBJECTIVE", // SUBJECTIVE, MULTIPLE_CHOICE
-            resultCount: 1,
-            results: [
-              {
-                content: "content"
-              },
-              // ...
-            ]
-          },
-          {
-            question: "test question2",
-            detailType: "MULTIPLE_CHOICE", // SUBJECTIVE, MULTIPLE_CHOICE
-            options: [
-              {
-                optionId: 1,
-                option: "choice 1"
-              },
-              // ...
-            ],
-            resultCount: 1,
-            results: [
-              {
-                selectOptionId: 1
-              },
-              // ...
-            ]
-          },
-          // ...
-        ]
-      }
-
-
-  );
-/*
   useEffect(() => {
     const fetchSurveyResults = async () => {
       try {
-        const response = await axios.get(`/surveys/${surveyId}/results`);
-        setSurvey(response.data);
+        const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+
+        // JWT 토큰이 있는 경우 요청을 보냅니다.
+        if (jwtToken) {
+          const response = await axios.get(`/surveys/${surveyId}/results`, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          });
+
+          setSurveyResults(response.data);
+        } else {
+          // JWT 토큰이 없는 경우 로그인 페이지로 이동 또는 다른 처리를 진행합니다.
+          setTimeout(() => {
+            alert("로그인 후 이용가능합니다");
+            navigate("/SignIn"); // 원하는 경로로 이동합니다.
+          }, 10);
+        }
       } catch (error) {
-        console.error('설문 결과를 불러오는 중 오류가 발생했습니다:', error);
+        console.error("Error fetching survey results:", error);
       }
     };
 
     fetchSurveyResults();
-  }, [surveyId]);
+  }, [surveyId,navigate]);
 
-  if (!survey) {
-    return <div>설문 결과를 불러오는 중입니다...</div>;
+  if (!surveyResults) {
+    return <Typography>Loading survey results...</Typography>;
   }
-*/
-  console.log(survey);
+
+  const { name, surveyDetails } = surveyResults;
+
   return (
-    <div>
-      <h1>{survey.name}</h1>
-      <ul>
-        {survey.surveyDetails.map((detail) => (
-          <li key={detail.question}>
-            <h2>{detail.question}</h2>
-            {detail.detailType === 'SUBJECTIVE' ? (
-              <ul>
-                {detail.results.map((result, index) => (
-                  <li key={index}>{result.content}</li>
-                ))}
-              </ul>
-            ) : (
-              <ul>
-                {detail.options.map((option) => (
-                  <li key={option.optionId}>
-                    {option.option} ({detail.results.filter(
-                      (result) => result.selectOptionId === option.optionId
-                    ).length})
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Survey Results: {name}
+      </Typography>
+
+      {surveyDetails.map((surveyDetail) => (
+        <div key={surveyDetail.question}>
+          <Typography variant="h6">{surveyDetail.question}</Typography>
+
+          {surveyDetail.detailType === "SUBJECTIVE" ? (
+            <div>
+              {surveyDetail.results.map((result, index) => (
+                <Typography key={index}>{result.content}</Typography>
+              ))}
+            </div>
+          ) : (
+            <div>
+              {surveyDetail.options.map((option) => (
+                <div key={option.optionId}>
+                  <Typography variant="subtitle1">{option.option}</Typography>
+                  <Typography>Result Count: {option.resultCount}</Typography>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </Box>
   );
 };
 
-export default SurveyResults;
+export default SurveyResultsPage;
