@@ -1,5 +1,5 @@
-def DOCKER_IMAGE_NAME = "syua0529/pollify-webserver"
-def NAMESPACE = "pollify-webserver"
+def DOCKER_IMAGE_NAME = "syua0529/webserver"
+def NAMESPACE = "webserver"
 def VERSION = "${env.BUILD_NUMBER}"
 
 podTemplate(label: 'builder',
@@ -42,7 +42,7 @@ podTemplate(label: 'builder',
                 )]) {
                     sh "kubectl get ns ${NAMESPACE}|| kubectl create ns ${NAMESPACE}"
                     sh """
-                        sed -i "\$(grep -n 'image:' ./k8s/deployment.yaml | grep -Eo '^[^:]+')s/cloudcomputing/cloudcomputing:${VERSION}/g" ./k8s/deployment.yaml
+                        sed -i "\$(grep -n 'image:' ./k8s/deployment.yaml | grep -Eo '^[^:]+')s/${DOCKER_IMAGE_NAME}/${DOCKER_IMAGE_NAME}:${VERSION}/g" ./k8s/deployment.yaml
                     """
                     sh "cat ./k8s/deployment.yaml"
                     sh "kubectl apply -f ./k8s/deployment.yaml -n ${NAMESPACE}"
