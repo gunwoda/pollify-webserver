@@ -1,4 +1,5 @@
-def DOCKER_IMAGE_NAME = "syua0529/webserver"
+def DOCKER_HOST = "syua0529"
+def DOCKER_IMAGE_NAME = "webserver"
 def NAMESPACE = "webserver"
 def VERSION = "${env.BUILD_NUMBER}"
 
@@ -25,9 +26,9 @@ podTemplate(label: 'builder',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                    sh "docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION} ."
                     sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                    sh "docker push ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION}"
                 }
             }
         }
