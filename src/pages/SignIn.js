@@ -50,16 +50,16 @@ const Boxs = styled(Box)`
 
 const SignIn = () => {
   const theme = createTheme();
-  const [checked] = useState(false);
+  const [checked] = useState(true);
   const [idError, setIdError] = useState('');
   const history = useNavigate();
 
   
 
   const onhandlePost = async (data) => {
-    const {password,id } = data;
-    const getData = { password,id };
-
+    const {password,email } = data;
+    const getData = { password,email };
+    console.log(getData);
     // post
     await axios
       .post('http://172.25.235.136:31081/api/auth/signin', getData)
@@ -86,16 +86,13 @@ const SignIn = () => {
     const data = new FormData(e.currentTarget);
     const joinData = {
       password: data.get('password'),
-      id : data.get('id'),
+      email : data.get('email'),
     };
-    const { id } = joinData;
+    const { email } = joinData;
 
     // id 공백 체크
-    if (id === '') setIdError('Id를 입력해주세요.');
+    if (email === '') setIdError('Id를 입력해주세요.');
     else setIdError('');
-
-    console.log(joinData);
-
     if (
       checked
     ) {
@@ -131,9 +128,9 @@ const SignIn = () => {
                   <TextField
                     required
                     fullWidth
-                    id="id"
-                    name="id"
-                    label="아이디"
+                    id="email"
+                    name="email"
+                    label="email"
                     error={idError !== '' || false}
                   />
                 </Grid>
@@ -145,7 +142,7 @@ const SignIn = () => {
                     type="password"
                     id="password"
                     name="password"
-                    label="비밀번호"
+                    label="password"
                   />
                 </Grid>
               </Grid>
