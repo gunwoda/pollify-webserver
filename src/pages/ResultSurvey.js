@@ -25,19 +25,18 @@ const HeaderComment1 = styled.div`
 `;
 
 const SurveyResultsPage = ({ match }) => {
-  const [surveyResults, setSurveyResults] = useState(null);
+  const [surveyResults, setSurveyResults] = useState({});
   const navigate = useNavigate();
   const { surveyId } = useParams();
 
   useEffect(() => {
     const fetchSurveyResults = async () => {
       try {
-        const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+        const jwtToken = localStorage.getItem("jwtToken");
         console.log("fetch");
 
-        // JWT 토큰이 있는 경우 요청을 보냅니다.
         if (jwtToken) {
-          const response = await axios.get(`http://172.25.235.136:31081/api/surveys/${surveyId}/results`, {
+          const response = await axios.get(`http://172.25.235.136/api/surveys/${surveyId}/results`, {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
             },
@@ -46,10 +45,9 @@ const SurveyResultsPage = ({ match }) => {
 
           setSurveyResults(response.data);
         } else {
-          // JWT 토큰이 없는 경우 로그인 페이지로 이동 또는 다른 처리를 진행합니다.
           setTimeout(() => {
-            alert("로그인 후 이용가능합니다");
-            navigate("/SignIn"); // 원하는 경로로 이동합니다.
+            alert("로그인 후 이용 가능합니다");
+            navigate("/SignIn");
           }, 10);
         }
       } catch (error) {
@@ -58,48 +56,44 @@ const SurveyResultsPage = ({ match }) => {
     };
 
     fetchSurveyResults();
-  }, [surveyId,navigate]);
-
-  if (!surveyResults) {
-    return <Typography>Loading survey results...</Typography>;
-  }
+  }, [surveyId, navigate]);
 
   const { name, surveyDetails } = surveyResults;
 
   return (
     <>
-    <Navbar></Navbar>
-    <Header>
+      <Navbar />
+      <Header>
         <HeaderComment1>Polify</HeaderComment1>
-    </Header>
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        Survey Results: {name}
-      </Typography>
+      </Header>
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          Survey Results: {name}
+        </Typography>
 
-      {surveyDetails.map((surveyDetail) => (
-        <div key={surveyDetail.question}>
-          <Typography variant="h6">{surveyDetail.question}</Typography>
+        {surveyDetails && surveyDetails.map((surveyDetail) => (
+          <div key={surveyDetail.question}>
+            <Typography variant="h6">{surveyDetail.question}</Typography>
 
-          {surveyDetail.detailType === "SUBJECTIVE" ? (
-            <div>
-              {surveyDetail.results.map((result, index) => (
-                <Typography key={index}>{result.content}</Typography>
-              ))}
-            </div>
-          ) : (
-            <div>
-              {surveyDetail.options.map((option) => (
-                <div key={option.optionId}>
-                  <Typography variant="subtitle1">{option.option}</Typography>
-                  <Typography>Result Count: {option.resultCount}</Typography>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
-    </Box>
+            {surveyDetail.detailType === "SUBJECTIVE" ? (
+              <div>
+                {surveyDetail.results.map((result, index) => (
+                  <Typography key={index}>{result.content}</Typography>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {surveyDetail.options.map((option) => (
+                  <div key={option.optionId}>
+                    <Typography variant="subtitle1">{option.option}</Typography>
+                    <Typography>Result Count: {option.resultCount}</Typography>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </Box>
     </>
   );
 };

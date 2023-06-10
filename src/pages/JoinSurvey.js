@@ -25,7 +25,7 @@ const HeaderComment1 = styled.div`
 `;
 
 
-const SurveyParticipationPage = ({ match }) => {
+const SurveyParticipationPage = ({ }) => {
   const { surveyId } = useParams();
   const [surveyDetails, setSurveyDetails] = useState([]);
   const [surveyResults, setSurveyResults] = useState([]);
