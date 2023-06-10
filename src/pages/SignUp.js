@@ -61,11 +61,12 @@ const Register = () => {
   const onhandlePost = async (data) => {
     const { email, password,nickname } = data;
     const getData = { email, password, nickname };
-
+    console.log("onhandlePost");
     // get
     await axios
       .post('http://172.25.235.146:31801/api/auth/signup', getData)
       .then(function (response) {
+        console.log(response);
         if(response.status === "success"){
           alert("회원가입 성공");
           history("/SignIn");
