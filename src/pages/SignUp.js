@@ -72,7 +72,7 @@ const Register = () => {
       .post('http://172.25.235.136:31081/api/auth/signup', getData)
       .then(function (response) {
         console.log(response);
-        if(response.status === "success"){
+        if(response.data.status === "success"){
           alert("회원가입 성공");
           history("/SignIn");
         }
