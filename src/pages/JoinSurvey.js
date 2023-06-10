@@ -28,25 +28,30 @@ const HeaderComment1 = styled.div`
 const SurveyParticipationPage = ({ match }) => {
   const { surveyId } = useParams();
   const [surveyDetails, setSurveyDetails] = useState([]);
-  const [surveyResults, setSurveyResults] = useState(surveyDetails.map((detail) => ({
-    surveyDetailId: detail.id,
-    content: "",
-  })));
+  const [surveyResults, setSurveyResults] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSurveyDetails = async () => {
       try {
-        console.log("axios SurveyDetails");
-        const response = await axios.get(`http://172.25.235.136:31081/api/surveys/${surveyId}`);
-        console.log("SurveyDetails: ",response.data.surveyDetails);
-        console.log(response.data.surveyResults);
+        const response = await axios.get(`http://172.25.235.136/api/surveys/${surveyId}`);
         setSurveyDetails(response.data.surveyDetails);
+        const modifiedSurveyDetails = response.data.surveyDetails.map(detail => {
+          const modifiedDetail = {
+            ...detail,
+            surveyDetailId: detail.id,
+            detailType: detail.detailType,
+            content: null,
+            optionId: null,
+          };
+          return modifiedDetail;
+        });
+        setSurveyResults(modifiedSurveyDetails);
       } catch (error) {
         console.error("Error fetching survey details:", error);
       }
     };
-
     fetchSurveyDetails();
   }, [surveyId]);
 
@@ -75,11 +80,12 @@ const SurveyParticipationPage = ({ match }) => {
       const payload = {
         surveyResults: surveyResults,
       };
-      const response = await axios.post(`http://172.25.235.136:31081/api/surveys/${surveyId}/results`, payload);
+      console.log(payload);
+      const response = await axios.post(`http://172.25.235.136/api/surveys/${surveyId}/results`, payload);
       console.log(response);
       console.log(payload);
       console.log("Survey participation submitted:", response.data);
-      navigate("http://172.25.235.136:31081");
+      navigate("/");
     } catch (error) {
       console.error("Error submitting survey participation:", error);
     }

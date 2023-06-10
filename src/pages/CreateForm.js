@@ -115,7 +115,7 @@ const CreateForm = () => {
 
     try {
       const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
-      const response = await axios.post("http://172.25.235.136:31081/api/surveys", surveyData, {
+      const response = await axios.post("http://172.25.235.136/api/surveys", surveyData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
