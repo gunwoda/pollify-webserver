@@ -53,8 +53,6 @@ const CreateForm = () => {
     },
   ]);
 
-  const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
-
   const handleQuestionChange = (e, index) => {
     const { name, value } = e.target;
     const updatedSurveyDetails = [...surveyDetails];
@@ -116,6 +114,7 @@ const CreateForm = () => {
     };
 
     try {
+      const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
       const response = await axios.post("http://172.25.235.136:31081/api/surveys", surveyData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
