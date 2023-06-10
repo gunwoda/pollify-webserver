@@ -36,11 +36,12 @@ const SurveyResultsPage = ({ match }) => {
 
         // JWT 토큰이 있는 경우 요청을 보냅니다.
         if (jwtToken) {
-          const response = await axios.get(`/surveys/${surveyId}/results`, {
+          const response = await axios.get(`http://172.25.235.146:31081/api/surveys/${surveyId}/results`, {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
             },
           });
+          console.log(response);
 
           setSurveyResults(response.data);
         } else {

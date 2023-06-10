@@ -62,8 +62,9 @@ const SignIn = () => {
 
     // post
     await axios
-      .post('http://172.25.235.146:31801/api/auth/signup', getData)
+      .post('http://172.25.235.146:31081/api/auth/signin', getData)
       .then(function (response) {
+        console.log(response);
         if (response.status === "success"){
           console.log(response, '성공');
           const token = response.token;

@@ -50,7 +50,7 @@ const Boxs = styled(Box)`
 
 const Register = () => {
   const theme = createTheme();
-  const [checked] = useState(false);
+  const [checked] = useState(true);
   const [emailError, setEmailError] = useState('');
   const [passwordState, setPasswordState] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -60,11 +60,16 @@ const Register = () => {
 
   const onhandlePost = async (data) => {
     const { email, password,nickname } = data;
-    const getData = { email, password, nickname };
+    const getData = { 
+      "email" : email,
+      "password" : password,
+      "nickname" : nickname,
+     };
+    console.log(getData);
     console.log("onhandlePost");
     // get
     await axios
-      .post('http://172.25.235.146:31801/api/auth/signup', getData)
+      .post('http://172.25.235.146:31081/api/auth/signup', getData)
       .then(function (response) {
         console.log(response);
         if(response.status === "success"){
@@ -108,8 +113,6 @@ const Register = () => {
     // 비밀번호 같은지 체크
     if (password !== rePassword) setPasswordError('비밀번호가 일치하지 않습니다.');
     else setPasswordError('');
-
-    console.log(joinData);
 
     if (
       emailRegex.test(email) &&

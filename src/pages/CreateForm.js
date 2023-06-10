@@ -18,6 +18,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
 
 const Header = styled.div`
   background-color: #f2f2f2;
@@ -39,6 +40,7 @@ const HeaderComment1 = styled.div`
 
 
 const CreateForm = () => {
+  const navigate = useNavigate();
   const [surveyName, setSurveyName] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -112,12 +114,13 @@ const CreateForm = () => {
     };
 
     try {
-      const response = await axios.post("/surveys", surveyData);
+      const response = await axios.post("http://172.25.235.146:31081/api/surveys", surveyData);
       const responseData = response.data;
-      
+      console.log(response);
       if (responseData.status === "success") {
         // 성공적인 응답 처리
         console.log("Survey creation successful");
+        navigate("/");
       } else if (responseData.status === "fail") {
         // 실패 응답 처리
         console.log("Survey creation failed:", responseData.reason);

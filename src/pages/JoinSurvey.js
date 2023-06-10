@@ -32,8 +32,9 @@ const SurveyParticipationPage = ({ match }) => {
   useEffect(() => {
     const fetchSurveyDetails = async () => {
       try {
-        const response = await axios.get(`/surveys/${surveyId}`);
+        const response = await axios.get(`http://172.25.235.146:31081/surveys/${surveyId}`);
         setSurveyDetails(response.data.surveyDetails);
+        console.log(response);
       } catch (error) {
         console.error("Error fetching survey details:", error);
       }
@@ -67,7 +68,9 @@ const SurveyParticipationPage = ({ match }) => {
       const payload = {
         surveyResults: surveyResults,
       };
-      const response = await axios.post(`/surveys/${surveyId}/results`, payload);
+      const response = await axios.post(`http://172.25.235.146:31081/api/surveys/${surveyId}/results`, payload);
+      console.log(response);
+      console.log(payload);
       console.log("Survey participation submitted:", response.data);
     } catch (error) {
       console.error("Error submitting survey participation:", error);
