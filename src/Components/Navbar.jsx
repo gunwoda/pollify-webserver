@@ -71,7 +71,7 @@ function Navbar() {
         <Menu><Link to="/createForm">Create Survey</Link></Menu>
         <Menu><Link to="/QuerySurvey">All surveys</Link></Menu>
       </Nav>
-      {!token && ( // 토큰이 없을 때만 BtnBox 보이도록 설정
+      {!token || (token === "undefined") ( // 토큰이 없을 때만 BtnBox 보이도록 설정
         <BtnBox>
           <Link to="/SignIn"><LoginBtn>Login</LoginBtn></Link>
           <Link to="/SignUp"><SignUpBtn>SignUp</SignUpBtn></Link>
