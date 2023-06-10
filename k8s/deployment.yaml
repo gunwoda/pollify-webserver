@@ -1,19 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pollify-webserver-deployment
+  name: webserver-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: pollify-webserver
+      app: webserver
   template:
     metadata:
       labels:
-        app: pollify-webserver
+        app: webserver
     spec:
       containers:
-        - name: pollify-webserver
-          image: syua0529/pollify-webserver
+        - name: webserver
+          image: syua0529/webserver
           ports:
             - containerPort: 8080
+          resources:
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 500m

@@ -1,5 +1,6 @@
-def DOCKER_IMAGE_NAME = "syua0529/pollify-webserver"
-def NAMESPACE = "pollify-webserver"
+def DOCKER_HOST = "syua0529"
+def DOCKER_IMAGE_NAME = "webserver"
+def NAMESPACE = "webserver"
 def VERSION = "${env.BUILD_NUMBER}"
 
 podTemplate(label: 'builder',
@@ -25,9 +26,9 @@ podTemplate(label: 'builder',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                    sh "docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION} ."
                     sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                    sh "docker push ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION}"
                 }
             }
         }
@@ -42,7 +43,7 @@ podTemplate(label: 'builder',
                 )]) {
                     sh "kubectl get ns ${NAMESPACE}|| kubectl create ns ${NAMESPACE}"
                     sh """
-                        sed -i "\$(grep -n 'image:' ./k8s/deployment.yaml | grep -Eo '^[^:]+')s/cloudcomputing/cloudcomputing:${VERSION}/g" ./k8s/deployment.yaml
+                        sed -i "\$(grep -n 'image:' ./k8s/deployment.yaml | grep -Eo '^[^:]+')s/${DOCKER_IMAGE_NAME}/${DOCKER_IMAGE_NAME}:${VERSION}/g" ./k8s/deployment.yaml
                     """
                     sh "cat ./k8s/deployment.yaml"
                     sh "kubectl apply -f ./k8s/deployment.yaml -n ${NAMESPACE}"
