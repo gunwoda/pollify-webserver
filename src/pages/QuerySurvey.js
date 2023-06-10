@@ -56,7 +56,7 @@ const SurveyListPage = () => {
 
       if (jwtToken) {
         // JWT 토큰이 있는 경우 자신이 만든 설문을 가져오는 요청을 보냅니다.
-        const response = await axios.get(`http://172,25,235,136:31081/api/surveys/member?page=${currentPage}`, {
+        const response = await axios.get(`http://172.25.235.136:31081/api/surveys/member?page=${currentPage}`, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },

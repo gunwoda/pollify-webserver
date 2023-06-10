@@ -32,7 +32,7 @@ const SurveyParticipationPage = ({ match }) => {
   useEffect(() => {
     const fetchSurveyDetails = async () => {
       try {
-        const response = await axios.get(`http://172,25,235,136:31081/surveys/${surveyId}`);
+        const response = await axios.get(`http://172.25.235.136:31081/surveys/${surveyId}`);
         setSurveyDetails(response.data.surveyDetails);
         console.log(response);
       } catch (error) {
