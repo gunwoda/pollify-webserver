@@ -114,7 +114,7 @@ const CreateForm = () => {
     };
 
     try {
-      const response = await axios.post("http://172.25.235.146:31081/api/surveys", surveyData);
+      const response = await axios.post("http://172,25,235,136:31081/api/surveys", surveyData);
       const responseData = response.data;
       console.log(response);
       if (responseData.status === "success") {

@@ -69,7 +69,7 @@ const Register = () => {
     console.log("onhandlePost");
     // get
     await axios
-      .post('http://172.25.235.146:31081/api/auth/signup', getData)
+      .post('http://172.25.235.136:31081/api/auth/signup', getData)
       .then(function (response) {
         console.log(response);
         if(response.status === "success"){

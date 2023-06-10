@@ -62,7 +62,7 @@ const SignIn = () => {
 
     // post
     await axios
-      .post('http://172.25.235.146:31081/api/auth/signin', getData)
+      .post('http://172.25.235.136:31081/api/auth/signin', getData)
       .then(function (response) {
         console.log(response);
         if (response.status === "success"){
