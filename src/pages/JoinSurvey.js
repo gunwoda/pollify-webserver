@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Typography, Card, CardContent, TextField, Button, Grid, Box } from "@mui/material";
 import Navbar from '../Components/Navbar';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Header = styled.div`
   background-color: #f2f2f2;
@@ -27,14 +28,20 @@ const HeaderComment1 = styled.div`
 const SurveyParticipationPage = ({ match }) => {
   const { surveyId } = useParams();
   const [surveyDetails, setSurveyDetails] = useState([]);
-  const [surveyResults, setSurveyResults] = useState([]);
+  const [surveyResults, setSurveyResults] = useState(surveyDetails.map((detail) => ({
+    surveyDetailId: detail.id,
+    content: "",
+  })));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSurveyDetails = async () => {
       try {
-        const response = await axios.get(`http://172.25.235.136:31081/surveys/${surveyId}`);
+        console.log("axios SurveyDetails");
+        const response = await axios.get(`http://172.25.235.136:31081/api/surveys/${surveyId}`);
+        console.log("SurveyDetails: ",response.data.surveyDetails);
+        console.log(response.data.surveyResults);
         setSurveyDetails(response.data.surveyDetails);
-        console.log(response);
       } catch (error) {
         console.error("Error fetching survey details:", error);
       }
@@ -72,6 +79,7 @@ const SurveyParticipationPage = ({ match }) => {
       console.log(response);
       console.log(payload);
       console.log("Survey participation submitted:", response.data);
+      navigate("http://172.25.235.136:31081");
     } catch (error) {
       console.error("Error submitting survey participation:", error);
     }

@@ -67,8 +67,9 @@ const SignIn = () => {
         console.log(response);
         if (response.data.status === "success"){
           console.log(response, '성공');
-          const token = response.token;
+          const token = response.data.token;
           localStorage.setItem('jwtToken',token);
+          console.log(localStorage.getItem('jwtToken'));
           history('/');
         }
         else{

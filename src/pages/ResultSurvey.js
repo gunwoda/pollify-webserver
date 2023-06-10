@@ -33,6 +33,7 @@ const SurveyResultsPage = ({ match }) => {
     const fetchSurveyResults = async () => {
       try {
         const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+        console.log("fetch");
 
         // JWT 토큰이 있는 경우 요청을 보냅니다.
         if (jwtToken) {

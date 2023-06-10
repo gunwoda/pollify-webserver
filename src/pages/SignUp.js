@@ -61,9 +61,9 @@ const Register = () => {
   const onhandlePost = async (data) => {
     const { email, password,nickname } = data;
     const getData = { 
-      "email" : email,
-      "password" : password,
-      "nickname" : nickname,
+      email : email,
+      password : password,
+      nickname : nickname,
      };
     console.log(getData);
     console.log("onhandlePost");

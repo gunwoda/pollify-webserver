@@ -6,7 +6,7 @@ import SignIn from "./pages/SignIn";
 import CreateForm from "./pages/CreateForm";
 import SurveyListPage from "./pages/QuerySurvey";
 import SurveyResultsPage from "./pages/ResultSurvey";
-import SurveyParticipation from "./pages/JoinSurvey";
+import SurveyParticipationPage from "./pages/JoinSurvey";
 
 const Router = () => {
 	return (
@@ -16,9 +16,8 @@ const Router = () => {
 			<Route path="/SignUp" element={<JoinForm />} />
 			<Route path='/createForm' element={<CreateForm/>} />
 			<Route path='/QuerySurvey' element={<SurveyListPage/>} />
-			<Route path='/ResultSurvey' element={<SurveyResultsPage/>} />
-			<Route path='/joinsurvey' element={<SurveyParticipation/>} />
-			
+			<Route path='/ResultSurvey/:surveyId' element={<SurveyResultsPage/>} />
+			<Route path='/joinsurvey/:surveyId' element={<SurveyParticipationPage/>} />
 		</Routes>
 	);
 };

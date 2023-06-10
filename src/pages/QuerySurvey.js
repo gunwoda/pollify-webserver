@@ -26,7 +26,7 @@ const HeaderComment1 = styled.div`
 
 const SurveyListPage = () => {
   const [surveyList, setSurveyList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const SurveyListPage = () => {
                   <CardContent>
                     <ListItemText primary={survey.name} secondary={`Duration: ${survey.duration}`} />
                   </CardContent>
-                  <Link to={`/survey/${survey.id}`}>View Details</Link>
+                  <Link to={`/joinsurvey/${survey.id}`}>View Details</Link>
                 </Card>
               </Grid>
             ))}
