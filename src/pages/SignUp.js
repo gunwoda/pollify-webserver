@@ -64,7 +64,7 @@ const Register = () => {
 
     // get
     await axios
-      .post('/auth/signup', {param : getData})
+      .post('http://172.25.235.146:31801/api/auth/signup', getData)
       .then(function (response) {
         if(response.status === "success"){
           alert("회원가입 성공");

@@ -62,7 +62,7 @@ const SignIn = () => {
 
     // post
     await axios
-      .post('http://localhost:8080/auth/register', {param : getData})
+      .post('http://172.25.235.146:31801/api/auth/signup', getData)
       .then(function (response) {
         if (response.status === "success"){
           console.log(response, '성공');
