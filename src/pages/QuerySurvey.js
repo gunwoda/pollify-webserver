@@ -23,7 +23,6 @@ const HeaderComment1 = styled.div`
   padding: 20px 0px;
 `;
 
-
 const SurveyListPage = () => {
   const [surveyList, setSurveyList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -62,7 +61,14 @@ const SurveyListPage = () => {
           },
         });
 
-        setSurveyList(response.data.surveys);
+        const surveyListData = response.data.surveys;
+        // 사용자가 만든 설문인지 여부를 판단하여 isMine 속성을 설정합니다.
+        const updatedSurveyList = surveyListData.map(survey => ({
+          ...survey,
+          isMine: true,
+        }));
+
+        setSurveyList(updatedSurveyList);
         setTotalPages(response.data.count);
       } else {
         alert("로그인이 되어있지 않습니다");
@@ -74,45 +80,49 @@ const SurveyListPage = () => {
 
   return (
     <>
-    <Navbar></Navbar>
-    <Header>
+      <Navbar></Navbar>
+      <Header>
         <HeaderComment1>Polify</HeaderComment1>
-    </Header>
-    <Box display="flex" justifyContent="center">
-      <Grid container spacing={2} sx={{ maxWidth: "800px", width: "100%" }}>
-        <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom>
-            Survey List
-          </Typography>
-          <Button variant="contained" onClick={handleViewMySurveys}>
-            View My Surveys
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            {surveyList.map((survey) => (
-              <Grid item key={survey.id} xs={12} sm={6} md={4}>
-                <Card>
-                  <CardContent>
-                    <ListItemText primary={survey.name} secondary={`Duration: ${survey.duration}`} />
-                  </CardContent>
-                  <Link to={`/joinsurvey/${survey.id}`}>View Details</Link>
-                </Card>
-              </Grid>
-            ))}
+      </Header>
+      <Box display="flex" justifyContent="center">
+        <Grid container spacing={2} sx={{ maxWidth: "800px", width: "100%" }}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              Survey List
+            </Typography>
+            <Button variant="contained" onClick={handleViewMySurveys}>
+              View My Surveys
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              {surveyList.map((survey) => (
+                <Grid item key={survey.id} xs={12} sm={6} md={4}>
+                  <Card>
+                    <CardContent>
+                      <ListItemText primary={survey.name} secondary={`Duration: ${survey.duration}`} />
+                    </CardContent>
+                    {survey.isMine ? (
+                      <Link to={`/ResultSurvey/${survey.id}`}>View Result</Link>
+                    ) : (
+                      <Link to={`/joinsurvey/${survey.id}`}>View Details</Link>
+                    )}
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <div>
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                <button key={page} onClick={() => handlePageChange(page)}>
+                  {page}
+                </button>
+              ))}
+            </div>
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <div>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-              <button key={page} onClick={() => handlePageChange(page)}>
-                {page}
-              </button>
-            ))}
-          </div>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
     </>
   );
 };

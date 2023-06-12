@@ -2,7 +2,7 @@ import Navbar from '../Components/Navbar';
 import styled from 'styled-components';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Card, CardContent, ListItemText, Button, Grid, Box } from "@mui/material";
+import { Typography, Card, CardContent, ListItemText, Grid, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Header = styled.div`
@@ -21,18 +21,6 @@ const HeaderComment1 = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px 0px;
-`;
-
-const Body = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-`;
-
-const Main = styled.div`
-  width: 60%;
-  position: relative;
-  box-sizing: border-box;
 `;
 
 const Home = () => {

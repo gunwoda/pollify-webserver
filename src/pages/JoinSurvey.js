@@ -24,8 +24,7 @@ const HeaderComment1 = styled.div`
   padding: 20px 0px;
 `;
 
-
-const SurveyParticipationPage = ({ }) => {
+const SurveyParticipationPage = () => {
   const { surveyId } = useParams();
   const [surveyDetails, setSurveyDetails] = useState([]);
   const [surveyResults, setSurveyResults] = useState([]);
