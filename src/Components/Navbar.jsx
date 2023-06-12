@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = styled.header`
   z-index: 10;
@@ -59,9 +59,26 @@ const SignUpBtn = styled.button`
   cursor: pointer;
 `;
 
+const LogoutBtn = styled.button`
+  width: 70px;
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+`;
+
 function Navbar() {
+  const history = useNavigate();
+
   // 로컬 스토리지에서 JWT 토큰 가져오기
   const token = localStorage.getItem("jwtToken");
+
+  const handleLogout = () => {
+    // 토큰 삭제
+    localStorage.removeItem("jwtToken");
+    // 홈 화면으로 리디렉션
+    history.push("/");
+  };
 
   return (
     <Header>
@@ -76,10 +93,13 @@ function Navbar() {
           <Link to="/SignIn"><LoginBtn>Login</LoginBtn></Link>
           <Link to="/SignUp"><SignUpBtn>SignUp</SignUpBtn></Link>
         </BtnBox>
-      ) : null}
+      ) : (
+        <BtnBox>
+          <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
+        </BtnBox>
+      )}
     </Header>
   );
 }
 
 export default Navbar;
-
