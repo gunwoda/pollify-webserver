@@ -66,13 +66,11 @@ const SurveyResultsPage = ({ match }) => {
     if (surveyDetails) {
       surveyDetails.forEach((surveyDetail) => {
         if (surveyDetail.detailType === "MULTIPLE_CHOICE") {
-          const option = surveyDetail.results.find((option) => option.selectOptionId === optionId);
-          console.log("option :", option);
-          console.log("optionId: ", optionId);
-          console.log("SelectOprionId: ", option.selectOptionId);
-          if (option) {
-            count = count + 1;
-          }
+          surveyDetail.results.forEach((result) => {
+            if (result.selectOptionId === optionId) {
+              count += 1;
+            }
+          });
         }
       });
     }
