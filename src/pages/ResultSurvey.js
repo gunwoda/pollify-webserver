@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Box } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { Typography, Box, List, ListItem, ListItemText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import Navbar from '../Components/Navbar';
-import styled from 'styled-components';
+import Navbar from "../Components/Navbar";
+import styled from "styled-components";
 
 const Header = styled.div`
   background-color: #f2f2f2;
@@ -33,25 +33,28 @@ const SurveyResultsPage = ({ match }) => {
     const fetchSurveyResults = async () => {
       try {
         const jwtToken = localStorage.getItem("jwtToken");
-        console.log("데이터 가져오는 중");
+        console.log("Fetching data...");
 
         if (jwtToken) {
-          const response = await axios.get(`http://172.25.235.136/api/surveys/${surveyId}/results`, {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          });
+          const response = await axios.get(
+            `http://172.25.235.136/api/surveys/${surveyId}/results`,
+            {
+              headers: {
+                Authorization: `Bearer ${jwtToken}`,
+              },
+            }
+          );
           console.log(response);
 
           setSurveyResults(response.data);
         } else {
           setTimeout(() => {
-            alert("로그인 후 이용 가능합니다");
+            alert("Please login to access the survey results");
             navigate("/SignIn");
           }, 10);
         }
       } catch (error) {
-        console.error("설문 결과 가져오는 중 오류 발생:", error);
+        console.error("Error fetching survey results:", error);
       }
     };
 
@@ -86,7 +89,7 @@ const SurveyResultsPage = ({ match }) => {
       </Header>
       <Box>
         <Typography variant="h4" gutterBottom>
-          설문 결과: {name}
+          Survey Results: {name}
         </Typography>
 
         {surveyDetails && surveyDetails.map((surveyDetail) => (
@@ -100,14 +103,14 @@ const SurveyResultsPage = ({ match }) => {
                 ))}
               </div>
             ) : (
-              <div>
+              <List>
                 {surveyDetail.options.map((option) => (
-                  <div key={option.optionId}>
-                    <Typography variant="subtitle1">{option.option}</Typography>
-                    <Typography>응답 수: {countOptionResponses(option.optionId)}</Typography>
-                  </div>
+                  <ListItem key={option.optionId}>
+                    <ListItemText primary={option.option} />
+                    <Typography>Response Count: {countOptionResponses(option.optionId)}</Typography>
+                  </ListItem>
                 ))}
-              </div>
+              </List>
             )}
           </div>
         ))}

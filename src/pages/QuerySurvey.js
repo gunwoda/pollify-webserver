@@ -69,7 +69,7 @@ const SurveyListPage = () => {
         }));
 
         setSurveyList(updatedSurveyList);
-        setTotalPages(response.data.count);
+        setTotalPages(response.data.totalPageNum);
       } else {
         alert("로그인이 되어있지 않습니다");
       }
