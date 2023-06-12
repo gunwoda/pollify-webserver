@@ -76,15 +76,6 @@ const Home = () => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <div>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-              <button key={page} onClick={() => handlePageChange(page)}>
-                {page}
-              </button>
-            ))}
-          </div>
-        </Grid>
       </Grid>
     </Box>
     </>

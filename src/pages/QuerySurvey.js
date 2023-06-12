@@ -35,11 +35,13 @@ const SurveyListPage = () => {
 
   const fetchSurveyList = async (page) => {
     try {
-      const response = await axios.get(`http://172.25.235.136/api/surveys?page=${page}`);
+      const response = await axios.get(`http://172.25.235.136/api/surveys?page=${page-1}`);
       console.log(response);
       const surveyListData = response.data;
       setSurveyList(surveyListData.surveys);
       setTotalPages(surveyListData.totalPageNum);
+      console.log(totalPages);
+      console.log(surveyListData.totalPageNum);
     } catch (error) {
       console.error("Error fetching survey list:", error);
     }
