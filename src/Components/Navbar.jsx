@@ -83,11 +83,17 @@ function Navbar() {
   return (
     <Header>
       <Logo><Link to="/">Polify</Link></Logo>
-      <Nav>
-        <Menu><Link to="/">Home</Link></Menu>
-        <Menu><Link to="/createForm">Create Survey</Link></Menu>
-        <Menu><Link to="/QuerySurvey">All surveys</Link></Menu>
-      </Nav>
+      {!token || token === "undefined" ? (
+        <Nav>
+          <Menu><Link to="/">Home</Link></Menu>
+          <Menu><Link to="/QuerySurvey">All surveys</Link></Menu>
+        </Nav>      ) : (
+        <Nav>
+          <Menu><Link to="/">Home</Link></Menu>
+          <Menu><Link to="/createForm">Create Survey</Link></Menu>
+          <Menu><Link to="/QuerySurvey">All surveys</Link></Menu>
+        </Nav>
+      )}
       {!token || token === "undefined" ? (
         <BtnBox>
           <Link to="/SignIn"><LoginBtn>Login</LoginBtn></Link>
