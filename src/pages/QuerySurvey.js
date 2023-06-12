@@ -25,7 +25,7 @@ const HeaderComment1 = styled.div`
 
 const SurveyListPage = () => {
   const [surveyList, setSurveyList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const SurveyListPage = () => {
       console.log(response);
       const surveyListData = response.data;
       setSurveyList(surveyListData.surveys);
-      setTotalPages(surveyListData.count);
+      setTotalPages(surveyListData.totalPageNum);
     } catch (error) {
       console.error("Error fetching survey list:", error);
     }
@@ -55,7 +55,7 @@ const SurveyListPage = () => {
 
       if (jwtToken) {
         // JWT 토큰이 있는 경우 자신이 만든 설문을 가져오는 요청을 보냅니다.
-        const response = await axios.get(`http://172.25.235.136/api/surveys/member?page=${currentPage}`, {
+        const response = await axios.get(`http://172.25.235.136/api/surveys/member?page=${currentPage-1}`, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
