@@ -33,7 +33,7 @@ const SurveyResultsPage = ({ match }) => {
     const fetchSurveyResults = async () => {
       try {
         const jwtToken = localStorage.getItem("jwtToken");
-        console.log("fetch");
+        console.log("데이터 가져오는 중");
 
         if (jwtToken) {
           const response = await axios.get(`http://172.25.235.136/api/surveys/${surveyId}/results`, {
@@ -51,7 +51,7 @@ const SurveyResultsPage = ({ match }) => {
           }, 10);
         }
       } catch (error) {
-        console.error("Error fetching survey results:", error);
+        console.error("설문 결과 가져오는 중 오류 발생:", error);
       }
     };
 
@@ -59,6 +59,23 @@ const SurveyResultsPage = ({ match }) => {
   }, [surveyId, navigate]);
 
   const { name, surveyDetails } = surveyResults;
+
+  const countOptionResponses = (optionId) => {
+    let count = 0;
+
+    if (surveyDetails) {
+      surveyDetails.forEach((surveyDetail) => {
+        if (surveyDetail.detailType === "MULTIPLE_CHOICE") {
+          const option = surveyDetail.options.find((option) => option.optionId === optionId);
+          if (option) {
+            count += option.resultCount;
+          }
+        }
+      });
+    }
+
+    return count;
+  };
 
   return (
     <>
@@ -68,7 +85,7 @@ const SurveyResultsPage = ({ match }) => {
       </Header>
       <Box>
         <Typography variant="h4" gutterBottom>
-          Survey Results: {name}
+          설문 결과: {name}
         </Typography>
 
         {surveyDetails && surveyDetails.map((surveyDetail) => (
@@ -86,7 +103,7 @@ const SurveyResultsPage = ({ match }) => {
                 {surveyDetail.options.map((option) => (
                   <div key={option.optionId}>
                     <Typography variant="subtitle1">{option.option}</Typography>
-                    <Typography>Result Count: {option.resultCount}</Typography>
+                    <Typography>응답 수: {countOptionResponses(option.optionId)}</Typography>
                   </div>
                 ))}
               </div>
