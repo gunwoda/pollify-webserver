@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Box, List, ListItem, ListItemText } from "@mui/material";
+import { Typography, Box, List, ListItem, ListItemText, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
@@ -92,28 +92,33 @@ const SurveyResultsPage = ({ match }) => {
           Survey Results: {name}
         </Typography>
 
-        {surveyDetails && surveyDetails.map((surveyDetail) => (
-          <div key={surveyDetail.question}>
-            <Typography variant="h6">{surveyDetail.question}</Typography>
+        {surveyDetails &&
+          surveyDetails.map((surveyDetail) => (
+            <Card key={surveyDetail.question} variant="outlined" sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h6">{surveyDetail.question}</Typography>
 
-            {surveyDetail.detailType === "SUBJECTIVE" ? (
-              <div>
-                {surveyDetail.results.map((result, index) => (
-                  <Typography key={index}>{result.content}</Typography>
-                ))}
-              </div>
-            ) : (
-              <List>
-                {surveyDetail.options.map((option) => (
-                  <ListItem key={option.optionId}>
-                    <ListItemText primary={option.option} />
-                    <Typography>Response Count: {countOptionResponses(option.optionId)}</Typography>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </div>
-        ))}
+                {surveyDetail.detailType === "SUBJECTIVE" ? (
+                  <List>
+                    {surveyDetail.results.map((result, index) => (
+                      <ListItem key={index}>
+                        <ListItemText primary={result.content} />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <List>
+                    {surveyDetail.options.map((option) => (
+                      <ListItem key={option.optionId}>
+                        <ListItemText primary={option.option} />
+                        <Typography>Response Count: {countOptionResponses(option.optionId)}</Typography>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </CardContent>
+            </Card>
+          ))}
       </Box>
     </>
   );

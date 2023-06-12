@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Box, List, ListItem, ListItemText, Card, CardContent } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import Navbar from "../Components/Navbar";
-import styled from "styled-components";
+import { Typography, Card, CardContent, ListItemText, Button, Grid, Box } from "@mui/material";
+import { Link } from "react-router-dom";
+import Navbar from '../Components/Navbar';
+import styled from 'styled-components';
 
 const Header = styled.div`
   background-color: #f2f2f2;
@@ -24,104 +23,108 @@ const HeaderComment1 = styled.div`
   padding: 20px 0px;
 `;
 
-const SurveyResultsPage = ({ match }) => {
-  const [surveyResults, setSurveyResults] = useState({});
-  const navigate = useNavigate();
-  const { surveyId } = useParams();
+const SurveyListPage = () => {
+  const [surveyList, setSurveyList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const fetchSurveyResults = async () => {
-      try {
-        const jwtToken = localStorage.getItem("jwtToken");
-        console.log("Fetching data...");
+    // 페이지 로드 시 공개 설문 리스트를 가져오는 요청을 보냅니다.
+    fetchSurveyList(currentPage);
+  }, [currentPage]);
 
-        if (jwtToken) {
-          const response = await axios.get(
-            `http://172.25.235.136/api/surveys/${surveyId}/results`,
-            {
-              headers: {
-                Authorization: `Bearer ${jwtToken}`,
-              },
-            }
-          );
-          console.log(response);
-
-          setSurveyResults(response.data);
-        } else {
-          setTimeout(() => {
-            alert("Please login to access the survey results");
-            navigate("/SignIn");
-          }, 10);
-        }
-      } catch (error) {
-        console.error("Error fetching survey results:", error);
-      }
-    };
-
-    fetchSurveyResults();
-  }, [surveyId, navigate]);
-
-  const { name, surveyDetails } = surveyResults;
-
-  const countOptionResponses = (optionId) => {
-    let count = 0;
-
-    if (surveyDetails) {
-      surveyDetails.forEach((surveyDetail) => {
-        if (surveyDetail.detailType === "MULTIPLE_CHOICE") {
-          surveyDetail.results.forEach((result) => {
-            if (result.selectOptionId === optionId) {
-              count += 1;
-            }
-          });
-        }
-      });
+  const fetchSurveyList = async (page) => {
+    try {
+      const response = await axios.get(`http://172.25.235.136/api/surveys?page=${page}`);
+      console.log(response);
+      const surveyListData = response.data;
+      setSurveyList(surveyListData.surveys);
+      setTotalPages(surveyListData.count);
+    } catch (error) {
+      console.error("Error fetching survey list:", error);
     }
+  };
 
-    return count;
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleViewMySurveys = async () => {
+    try {
+      const jwtToken = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+
+      if (jwtToken) {
+        // JWT 토큰이 있는 경우 자신이 만든 설문을 가져오는 요청을 보냅니다.
+        const response = await axios.get(`http://172.25.235.136/api/surveys/member?page=${currentPage}`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
+
+        const surveyListData = response.data.surveys;
+        // 사용자가 만든 설문인지 여부를 판단하여 isMine 속성을 설정합니다.
+        const updatedSurveyList = surveyListData.map(survey => ({
+          ...survey,
+          isMine: true,
+        }));
+
+        setSurveyList(updatedSurveyList);
+        setTotalPages(response.data.totalPageNum);
+      } else {
+        alert("로그인이 되어있지 않습니다");
+      }
+    } catch (error) {
+      console.error("Error fetching member surveys:", error);
+    }
   };
 
   return (
     <>
-      <Navbar />
+      <Navbar></Navbar>
       <Header>
         <HeaderComment1>Polify</HeaderComment1>
       </Header>
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          Survey Results: {name}
-        </Typography>
-
-        {surveyDetails &&
-          surveyDetails.map((surveyDetail) => (
-            <Card key={surveyDetail.question} variant="outlined" sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="h6">{surveyDetail.question}</Typography>
-
-                {surveyDetail.detailType === "SUBJECTIVE" ? (
-                  <List>
-                    {surveyDetail.results.map((result, index) => (
-                      <ListItem key={index}>
-                        <ListItemText primary={result.content} />
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : (
-                  <List>
-                    {surveyDetail.options.map((option) => (
-                      <ListItem key={option.optionId}>
-                        <ListItemText primary={option.option} />
-                        <Typography>Response Count: {countOptionResponses(option.optionId)}</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+      <Box display="flex" justifyContent="center">
+        <Grid container spacing={2} sx={{ maxWidth: "800px", width: "100%" }}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              Survey List
+            </Typography>
+            <Button variant="contained" onClick={handleViewMySurveys}>
+              View My Surveys
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              {surveyList.map((survey) => (
+                <Grid item key={survey.id} xs={12} sm={6} md={4}>
+                  <Card>
+                    <CardContent>
+                      <ListItemText primary={survey.name} secondary={`Duration: ${survey.duration}`} />
+                    </CardContent>
+                    {survey.isMine ? (
+                      <Link to={`/ResultSurvey/${survey.id}`}>View Result</Link>
+                    ) : (
+                      <Link to={`/joinsurvey/${survey.id}`}>View Details</Link>
+                    )}
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <div>
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                <button key={page} onClick={() => handlePageChange(page)}>
+                  {page}
+                </button>
+              ))}
+            </div>
+          </Grid>
+        </Grid>
       </Box>
     </>
   );
 };
 
-export default SurveyResultsPage;
+export default SurveyListPage;
